@@ -2,7 +2,7 @@
 
   <arg name="model" default="$(find FYP2020-Swarm-Quadruped)/urdf/.urdf.xacro"/>
   <arg name="gui" default="true" />
-  <arg name="rvizconfig" default="$(find FYP2020-Swarm-Quadruped)/rviz/urdf.rviz" />
+  <arg name="rvizconfig" default="$(find FYP2020-Swarm-Quadruped)/Rviz/urdf.rviz" />
 
   <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
   <param name="use_gui" value="$(arg gui)"/>
