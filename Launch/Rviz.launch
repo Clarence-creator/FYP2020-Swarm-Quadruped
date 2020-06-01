@@ -1,6 +1,6 @@
 <launch>
 
-  <arg name="model" default="$(find FYP2020-Swarm-Quadruped)/urdf/.urdf.xacro"/>
+  <arg name="model" default="$(find FYP2020-Swarm-Quadruped)/urdf/urdf.xacro"/>
   <arg name="gui" default="true" />
   <arg name="rvizconfig" default="$(find FYP2020-Swarm-Quadruped)/Rviz/urdf.rviz" />
 
