@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(quadruped_9g)
+project(FYP2020-Swarm-Quadruped)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -117,7 +117,7 @@ find_package(orocos_kdl REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES quadruped_9g
+#  LIBRARIES FYP2020-Swarm-Quadruped
    CATKIN_DEPENDS controller_manager gazebo_ros gazebo_ros_control joint_state_publisher robot_state_publisher roscpp rospy rviz xacro trac_ik_lib
    DEPENDS Boost orocos_kdl
 )
@@ -136,7 +136,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/quadruped_9g.cpp
+#   src/${PROJECT_NAME}/FYP2020-Swarm-Quadruped.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -147,7 +147,7 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/quadruped_9g_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/FYP2020-Swarm-Quadruped_node.cpp)
 add_executable(ik_test_node src/ik_test_node.cpp)
 target_link_libraries(ik_test_node ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES})
 
@@ -212,7 +212,7 @@ target_link_libraries(walk_node ${catkin_LIBRARIES} ${orocos_kdl_LIBRARIES})
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_quadruped_9g.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_FYP2020-Swarm-Quadruped.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
