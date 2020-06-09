@@ -4,6 +4,7 @@ A Quadruped robot project that uses ROS and Gazebo
 To gitclone to your terminal, type: $git clone https://github.com/Clarence-creator/FYP2020-Swarm-Quadruped.git
 After that, remember to $catkin_make and $source devel/setup.bash 
 this is the code you should write 
+
 cd ~/catkin_ws
 catkin_make
 source ./devel/setup.bash
