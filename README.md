@@ -11,7 +11,6 @@ catkin_make
 source <your_ws/>/devel/setup.bash
 
 
-
 Spawning robot model into Gazebo:
 
 $roslaunch FYP2020-Swarm-Quadruped gazebo.launch 
