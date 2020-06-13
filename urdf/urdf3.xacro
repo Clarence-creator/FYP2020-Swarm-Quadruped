@@ -11,6 +11,8 @@
     <xacro:property name="body_len" value="0.10" />
     <xacro:property name="body_width" value="0.05" />
     <xacro:property name="body_height" value="0.02" />
+    <xacro:property name="damping_value" value="10" />
+    <xacro:property name="friction_value" value="0.1" />
 
     <material name="red">
         <color rgba="255 0 0 1"/>
@@ -36,6 +38,13 @@
          <mass value = "10"/>
          <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0" />
        </inertial>
+
+       <collision>
+         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <geometry>
+            <box size="${body_len} ${body_width} ${body_height}" />
+         </geometry>
+       </collision>
     </link>
 
 
@@ -43,7 +52,7 @@
   <!--Left Front Leg-->
     <link name="shoulder_link_lf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="${pi*0.5} 0 0" xyz="0 ${0.5*1.0*shoul_len} 0"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shoul_len}"/>
          </geometry>
@@ -65,17 +74,18 @@
     </link>
 
     <joint name="shoulder_joint_lf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="${0.5*body_len*1.0} ${1.0*0.005} 0"/>
       <axis xyz="1 0 0"/>
       <parent link="base_link"/>
       <child link="shoulder_link_lf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="thigh_link_lf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${thigh_len}"/>
          </geometry>
@@ -97,17 +107,18 @@
     </link>
 
     <joint name="elbow_joint_lf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 ${1.0*shoul_len} 0"/>
       <axis xyz="0 1 0"/>
       <parent link="shoulder_link_lf"/>
       <child link="thigh_link_lf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="shank_link_lf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shank_len}"/>
          </geometry>
@@ -129,11 +140,12 @@
     </link>
 
     <joint name="wrist_joint_lf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 0 ${-thigh_len}"/>
       <axis xyz="0 1 0"/>
       <parent link="thigh_link_lf"/>
       <child link="shank_link_lf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -165,6 +177,7 @@
       <axis xyz="0 1 0"/>
       <parent link="shank_link_lf"/>
       <child link="feet_link_lf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -172,7 +185,7 @@
   <!--Right Front Leg-->
     <link name="shoulder_link_rf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="${pi*0.5} 0 0" xyz="0 ${0.5*-1.0*shoul_len} 0"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shoul_len}"/>
          </geometry>
@@ -194,17 +207,18 @@
     </link>
 
     <joint name="shoulder_joint_rf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="${0.5*body_len*1.0} ${-1.0*0.005} 0"/>
       <axis xyz="1 0 0"/>
       <parent link="base_link"/>
       <child link="shoulder_link_rf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="thigh_link_rf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${thigh_len}"/>
          </geometry>
@@ -226,17 +240,18 @@
     </link>
 
     <joint name="elbow_joint_rf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 ${-1.0*shoul_len} 0"/>
       <axis xyz="0 1 0"/>
       <parent link="shoulder_link_rf"/>
       <child link="thigh_link_rf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="shank_link_rf">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shank_len}"/>
          </geometry>
@@ -258,11 +273,12 @@
     </link>
 
     <joint name="wrist_joint_rf" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 0 ${-thigh_len}"/>
       <axis xyz="0 1 0"/>
       <parent link="thigh_link_rf"/>
       <child link="shank_link_rf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -294,6 +310,7 @@
       <axis xyz="0 1 0"/>
       <parent link="shank_link_rf"/>
       <child link="feet_link_rf"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -301,7 +318,7 @@
   <!--Left Back Leg-->
     <link name="shoulder_link_lb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="${pi*0.5} 0 0" xyz="0 ${0.5*1.0*shoul_len} 0"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shoul_len}"/>
          </geometry>
@@ -323,17 +340,18 @@
     </link>
 
     <joint name="shoulder_joint_lb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="${0.5*body_len*-1.0} ${1.0*0.005} 0"/>
       <axis xyz="1 0 0"/>
       <parent link="base_link"/>
       <child link="shoulder_link_lb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="thigh_link_lb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${thigh_len}"/>
          </geometry>
@@ -355,17 +373,18 @@
     </link>
 
     <joint name="elbow_joint_lb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 ${1.0*shoul_len} 0"/>
       <axis xyz="0 1 0"/>
       <parent link="shoulder_link_lb"/>
       <child link="thigh_link_lb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="shank_link_lb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shank_len}"/>
          </geometry>
@@ -387,11 +406,12 @@
     </link>
 
     <joint name="wrist_joint_lb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 0 ${-thigh_len}"/>
       <axis xyz="0 1 0"/>
       <parent link="thigh_link_lb"/>
       <child link="shank_link_lb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -423,6 +443,7 @@
       <axis xyz="0 1 0"/>
       <parent link="shank_link_lb"/>
       <child link="feet_link_lb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -430,7 +451,7 @@
   <!--Right Back Leg-->
     <link name="shoulder_link_rb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="${pi*0.5} 0 0" xyz="0 ${0.5*-1.0*shoul_len} 0"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shoul_len}"/>
          </geometry>
@@ -452,17 +473,18 @@
     </link>
 
     <joint name="shoulder_joint_rb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="${0.5*body_len*-1.0} ${-1.0*0.005} 0"/>
       <axis xyz="1 0 0"/>
       <parent link="base_link"/>
       <child link="shoulder_link_rb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="thigh_link_rb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*thigh_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${thigh_len}"/>
          </geometry>
@@ -484,17 +506,18 @@
     </link>
 
     <joint name="elbow_joint_rb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 ${-1.0*shoul_len} 0"/>
       <axis xyz="0 1 0"/>
       <parent link="shoulder_link_rb"/>
       <child link="thigh_link_rb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
     <link name="shank_link_rb">
        <collision>
-         <origin xyz="0 0 0" rpy="0 0 0"/>
+         <origin rpy="0 0 0" xyz="0 0 ${-0.5*shank_len}"/>
          <geometry>
             <cylinder radius="${link_radius}" length="${shank_len}"/>
          </geometry>
@@ -516,11 +539,12 @@
     </link>
 
     <joint name="wrist_joint_rb" type="revolute">
-      <limit effort="1000.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+      <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
       <origin xyz="0 0 ${-thigh_len}"/>
       <axis xyz="0 1 0"/>
       <parent link="thigh_link_rb"/>
       <child link="shank_link_rb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
@@ -552,6 +576,7 @@
       <axis xyz="0 1 0"/>
       <parent link="shank_link_rb"/>
       <child link="feet_link_rb"/>
+      <dynamics damping="${damping_value}" friction="${friction_value}"/>
     </joint>
 
 
