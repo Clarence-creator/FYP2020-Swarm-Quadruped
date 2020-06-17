@@ -8,7 +8,8 @@ Installation:
 2. Build your workspace:
 - cd <your_ws>
 - catkin_make
-- source /devel/setup.bash
+- source ./devel/setup.bash
+
 
 
 Spawning robot model into Gazebo:
