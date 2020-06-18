@@ -2,11 +2,16 @@
 
 <launch>
 
-    <arg name="model" default="$(find FYP2020-Swarm-Quadruped)/urdf/urdf3.xacro" />
+    <arg name="model" default="$(find fyp_quadruped)/urdf/spawn_model.xacro" />
+    <arg name="paused" default="false"/>
+    <arg name="use_sim_time" default="true"/>
+    <arg name="gui" default="true"/>
+    <arg name="headless" default="false"/>
+    <arg name="debug" default="false"/>
 
     <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
 
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-	 args="-param robot_description -urdf -model Quadruped"/>
+	 args="-param robot_description -urdf -model fyp_quadruped"/>
 
 </launch>
