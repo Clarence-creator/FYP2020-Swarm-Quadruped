@@ -1,0 +1,606 @@
+<?xml version="1.0"?>
+<robot name="fyp_quadruped" xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <!-- Model Dimensions -->
+  <xacro:property name="pi" value="3.1415" />
+  <xacro:property name="body_length" value="0.53" />
+  <xacro:property name="body_width" value="0.3" />
+  <xacro:property name="body_height" value="0.1" />
+  <xacro:property name="shoulder" value="0.05" />
+  <xacro:property name="leg_length" value="0.15" />
+  <xacro:property name="leg_width" value="0.05" />
+  <xacro:property name="leg_height" value="0.05" />
+  <xacro:property name="feet_radius" value="0.025"/>
+  <xacro:property name="damping_value" value="10" />
+  <xacro:property name="friction_value" value="0.1" />
+
+
+  <!-- Import Rviz colors -->
+  <xacro:include filename="$(find fyp_quadruped)/urdf/materials.xacro" />
+
+
+  <!-- Inertias -->
+  <xacro:macro name="box_inertial" params="mass length width height">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${mass*(height*height+length*length)/12.0}" ixy="0.0" ixz="0.0" iyy="${mass*(width*width+length*length)/12.0}" iyz="0.0" izz="${mass*(width*width+height*height)/12.0}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="feet_inertial" params="mass radius">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${mass*2*(radius*radius)/5.0}" ixy="0.0" ixz="0.0" iyy="${mass*2*(radius*radius)/5.0}" iyz="0.0" izz="${mass*2*(radius*radius)/5.0}" />
+    </inertial>
+  </xacro:macro>
+
+
+  <!-- Main Body -->
+  <link name="dummy_link">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001" />
+    </inertial>
+    <gazebo reference="dummy_link">
+    </gazebo>
+  </link>
+
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_length} ${body_width} ${body_height}"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${body_width} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${3}" length="${body_length}" width="${body_width}" height="${body_height}"/>
+  </link>
+
+  <joint name="dummy_base_joint" type="fixed">
+    <parent link="dummy_link"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <gazebo reference="base_link">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="dummy_base_joint">
+    <provideFeedback>true</provideFeedback>
+    <disableFixedJointLumping>true</disableFixedJointLumping>
+  </gazebo>
+
+
+
+  <!--Left Front Leg-->
+  <link name="shoulder_link_lf">
+    <collision>
+      <origin xyz="0.25 0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.25 0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder}" width="${shoulder}" height="${shoulder}"/>
+  </link>
+
+  <joint name="shoulder_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.25 0.15 0.2621"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_lf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_lf">
+    <collision>
+      <origin xyz="0.197 0.175 0.2091" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.197 0.175 0.2091" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="elbow_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.25 0.175 0.2621"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shoulder_link_lf"/>
+    <child link="thigh_link_lf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_lf">
+    <collision>
+      <origin xyz="0.197 0.175 0.103" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.197 0.175 0.103" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="knee_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.144 0.175 0.156"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_lf"/>
+    <child link="shank_link_lf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+  <link name="feet_link_lf">
+    <collision>
+      <origin xyz="0.25 0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.25 0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <xacro:feet_inertial mass="0.05" radius="${feet_radius}"/>
+  </link>
+
+  <joint name="ankle_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.144 0.175 0.05"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shank_link_lf"/>
+    <child link="feet_link_lf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="feet_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+  <!--Right Front Leg-->
+  <link name="shoulder_link_rf">
+    <collision>
+      <origin xyz="0.25 -0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.25 -0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder}" width="${shoulder}" height="${shoulder}"/>
+  </link>
+
+  <joint name="shoulder_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.25 0.15 0.2621"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_rf">
+    <collision>
+      <origin xyz="0.197 -0.175 0.2091" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.197 -0.175 0.2091" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="elbow_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.25 -0.175 0.2621"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shoulder_link_rf"/>
+    <child link="thigh_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_rf">
+    <collision>
+      <origin xyz="0.197 -0.175 0.103" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.197 -0.175 0.103" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="knee_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.144 -0.175 0.156"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_rf"/>
+    <child link="shank_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+  <link name="feet_link_rf">
+    <collision>
+      <origin xyz="0.25 -0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="0.25 -0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <xacro:feet_inertial mass="0.05" radius="${feet_radius}"/>
+  </link>
+
+  <joint name="ankle_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.144 -0.175 0.05"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shank_link_rf"/>
+    <child link="feet_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="feet_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+  <!--Left Back Leg-->
+  <link name="shoulder_link_lb">
+    <collision>
+      <origin xyz="-0.25 0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.25 0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder}" width="${shoulder}" height="${shoulder}"/>
+  </link>
+
+  <joint name="shoulder_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.25 0.15 0.2621"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_lb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_lb">
+    <collision>
+      <origin xyz="-0.197 0.175 0.2091" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.197 0.175 0.2091" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="elbow_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.25 0.175 0.2621"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shoulder_link_lb"/>
+    <child link="thigh_link_lb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_lb">
+    <collision>
+      <origin xyz="-0.197 0.175 0.103" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.197 0.175 0.103" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="knee_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.144 0.175 0.156"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_lb"/>
+    <child link="shank_link_lb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+  <link name="feet_link_lb">
+    <collision>
+      <origin xyz="-0.25 0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.25 0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <xacro:feet_inertial mass="0.05" radius="${feet_radius}"/>
+  </link>
+
+  <joint name="ankle_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.144 0.175 0.05"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shank_link_lb"/>
+    <child link="feet_link_lb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="feet_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/White</material>
+  </gazebo>
+
+
+
+  <!--Right Back Leg-->
+  <link name="shoulder_link_rb">
+    <collision>
+      <origin xyz="-0.25 -0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.25 -0.175 0.2621" rpy="0 0 0"/>
+      <geometry>
+        <box size="${shoulder} ${shoulder} ${shoulder}"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder}" width="${shoulder}" height="${shoulder}"/>
+  </link>
+
+  <joint name="shoulder_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.25 0.15 0.2621"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_rb">
+    <collision>
+      <origin xyz="-0.197 -0.175 0.2091" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.197 -0.175 0.2091" rpy="0 0.785 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="elbow_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.25 -0.175 0.2621"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shoulder_link_rb"/>
+    <child link="thigh_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_rb">
+    <collision>
+      <origin xyz="-0.197 -0.175 0.103" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.197 -0.175 0.103" rpy="0 5.5 0"/>
+      <geometry>
+        <box size="${leg_length} ${leg_width} ${leg_height}"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <xacro:box_inertial mass="${0.125}" length="${leg_length}" width="${leg_width}" height="${leg_height}"/>
+  </link>
+
+  <joint name="knee_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.144 -0.175 0.156"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_rb"/>
+    <child link="shank_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+  <link name="feet_link_rb">
+    <collision>
+      <origin xyz="-0.25 -0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+    </collision>
+    <visual>
+      <origin xyz="-0.25 -0.175 0.025" rpy="0 0 0"/>
+      <geometry>
+        <sphere radius="${feet_radius}"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <xacro:feet_inertial mass="0.05" radius="${feet_radius}"/>
+  </link>
+
+  <joint name="ankle_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="-0.144 -0.175 0.05"/>
+    <axis xyz="0 1 0"/>
+    <parent link="shank_link_rb"/>
+    <child link="feet_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="feet_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/White</material>
+  </gazebo>
+
+</robot>
