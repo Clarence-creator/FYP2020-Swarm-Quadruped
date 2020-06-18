@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
     <include file="$(find gazebo_ros)/launch/empty_world.launch" >
-       <arg name="paused" value="false"/>
+      <arg name="paused" value="false"/>
+      <arg name="use_sim_time" default="true"/>
+      <arg name="gui" default="true"/>
+      <arg name="headless" default="false"/>
+      <arg name="debug" default="false"/>
     </include>
-    <include file="$(find FYP2020-Swarm-Quadruped)/launch/control.launch"/>
-    <include file="$(find FYP2020-Swarm-Quadruped)/launch/spawn.launch"/>
-</launch> 
 
+    <include file="$(find fyp_quadruped)/launch/spawn.launch"/>
+</launch> 
