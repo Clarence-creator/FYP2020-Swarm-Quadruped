@@ -3,7 +3,7 @@ A Quadruped robot project that uses ROS and Gazebo, we are using melodic version
 
 Installation:
 
-1. Gitclone: git clone https://github.com/Clarence-creator/FYP2020-Swarm-Quadruped.git
+1. Gitclone: git clone https://github.com/Clarence-creator/fyp_quadruped.git
 
 2. Build your workspace:
 - cd <your_ws>
