@@ -1,5 +1,5 @@
 # FYP2020-Swarm-Quadruped
-A Quadruped robot project that uses ROS and Gazebo
+A Quadruped robot project that uses ROS and Gazebo, we are using melodic version of ros.
 
 Installation:
 
