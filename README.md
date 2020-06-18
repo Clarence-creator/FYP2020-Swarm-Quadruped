@@ -14,4 +14,4 @@ Installation:
 
 Spawning robot model into Gazebo:
 
-- $roslaunch FYP2020-Swarm-Quadruped gazebo.launch 
+- $roslaunch fyp_quadruped gazebo.launch
