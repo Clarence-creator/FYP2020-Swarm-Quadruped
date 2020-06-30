@@ -1,0 +1,72 @@
+fyp_quadruped:
+    # Publish all joint states -----------------------------------
+    joint_state_controller:
+      type: joint_state_controller/JointStateController
+      publish_rate: 60
+
+    # Position Controllers ---------------------------------------
+    shoulder_joint_lf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: shoulder_joint_lf
+      pid: {p: 200, i: 100, d: 30}
+    shoulder_joint_rf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: shoulder_joint_rf
+      pid: {p: 200, i: 100, d: 30}
+    shoulder_joint_lb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: shoulder_joint_lb
+      pid: {p: 200, i: 100, d: 30}
+    shoulder_joint_rb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: shoulder_joint_rb
+      pid: {p: 200, i: 100, d: 30}
+    elbow_joint_lf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: elbow_joint_lf
+      pid: {p: 200, i: 100, d: 30}
+    elbow_joint_rf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: elbow_joint_rf
+      pid: {p: 200, i: 100, d: 30}
+    elbow_joint_lb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: elbow_joint_lb
+      pid: {p: 200, i: 100, d: 30}
+    elbow_joint_rb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: elbow_joint_rb
+      pid: {p: 200, i: 100, d: 30}
+    knee_joint_lf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: knee_joint_lf
+      pid: {p: 200, i: 100, d: 30}
+    knee_joint_rf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: knee_joint_rf
+      pid: {p: 200, i: 100, d: 30}
+    knee_joint_lb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: knee_joint_lb
+      pid: {p: 200, i: 100, d: 30}
+    knee_joint_rb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: knee_joint_rb
+      pid: {p: 200, i: 100, d: 30}
+    ankle_joint_lf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: ankle_joint_lf
+      pid: {p: 200, i: 100, d: 30}
+    ankle_joint_rf_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: ankle_joint_rf
+      pid: {p: 200, i: 100, d: 30}
+    ankle_joint_lb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: ankle_joint_lb
+      pid: {p: 200, i: 100, d: 30}
+    ankle_joint_rb_position_controller:
+      type: effort_controllers/JointPositionController
+      joint: ankle_joint_rb
+      pid: {p: 200, i: 100, d: 30}
+    # To add more just add them here as the first one
