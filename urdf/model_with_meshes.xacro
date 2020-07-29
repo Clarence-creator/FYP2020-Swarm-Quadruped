@@ -56,7 +56,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/body/body.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="grey"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.0 0.0 0.2416"/>
@@ -79,7 +79,7 @@
   <gazebo reference="base_link">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Grey</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -97,7 +97,7 @@
       <geometry>
         <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
       </geometry>
-      <material name="red"/>
+      <material name="white"/>
     </collision>
     <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
   </link>
@@ -113,7 +113,7 @@
   <gazebo reference="shoulder_link_lf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Red</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -123,7 +123,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.2565 0.16 0.1131" rpy="0.0 0.785 0.0"/>
@@ -145,7 +145,7 @@
   <gazebo reference="thigh_link_lf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -155,7 +155,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="green"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.3696 0.17 0.0" rpy="0.0 5.5 0.0"/>
@@ -177,7 +177,7 @@
   <gazebo reference="shank_link_lf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Green</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -189,7 +189,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="red"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.38 -0.064 0.2616"/>
@@ -211,7 +211,7 @@
   <gazebo reference="shoulder_link_rf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Red</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
   <link name="thigh_link_rf">
@@ -220,7 +220,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.2565 -0.064 0.1131" rpy="0.0 0.785 0.0"/>
@@ -242,7 +242,7 @@
   <gazebo reference="thigh_link_rf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
   <link name="shank_link_rf">
@@ -251,7 +251,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="green"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.3696 -0.06 0.0" rpy="0.0 5.5 0.0"/>
@@ -273,7 +273,7 @@
   <gazebo reference="shank_link_rf">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Green</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -291,7 +291,7 @@
       <geometry>
         <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
       </geometry>
-      <material name="red"/>
+      <material name="white"/>
     </collision>
     <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
   </link>
@@ -307,7 +307,7 @@
   <gazebo reference="shoulder_link_lb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Red</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -317,7 +317,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.2085 0.16 0.0919" rpy="0.0 5.5 0.0"/>
@@ -339,7 +339,7 @@
   <gazebo reference="thigh_link_lb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -349,7 +349,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="green"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.0954 0.17 0.0212" rpy="0.0 0.785 0.0"/>
@@ -371,7 +371,7 @@
   <gazebo reference="shank_link_lb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Green</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
@@ -383,7 +383,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="red"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.06 -0.064 0.2616"/>
@@ -405,7 +405,7 @@
   <gazebo reference="shoulder_link_rb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Red</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
   <link name="thigh_link_rb">
@@ -414,7 +414,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="blue"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.2085 -0.064 0.0919" rpy="0.0 5.5 0.0"/>
@@ -436,7 +436,7 @@
   <gazebo reference="thigh_link_rb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Blue</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
   <link name="shank_link_rb">
@@ -445,7 +445,7 @@
       <geometry>
        <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
       </geometry>
-      <material name="green"/>
+      <material name="white"/>
     </visual>
     <collision>
       <origin xyz="0.0954 -0.06 0.0212" rpy="0.0 0.785 0.0"/>
@@ -467,7 +467,7 @@
   <gazebo reference="shank_link_rb">
     <mu1>100000.0</mu1>
     <mu2>100000.0</mu2>
-    <material>Gazebo/Green</material>
+    <material>Gazebo/White</material>
   </gazebo>
 
 
