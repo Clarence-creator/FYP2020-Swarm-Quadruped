@@ -1,32 +1,514 @@
 <?xml version="1.0"?>
 <robot name="fyp_quadruped" xmlns:xacro="http://ros.org/wiki/xacro">
 
+  <!-- Model Dimensions -->
+  <xacro:property name="pi" value="3.1415" />
+  <xacro:property name="body_length" value="0.55" />
+  <xacro:property name="body_width" value="0.16" />
+  <xacro:property name="body_height" value="0.08" />
+  <xacro:property name="shoulder_length" value="0.07" />
+  <xacro:property name="shoulder_width" value="0.09" />
+  <xacro:property name="shoulder_height" value="0.03" />
+  <xacro:property name="thigh_length" value="0.03" />
+  <xacro:property name="thigh_width" value="0.07" />
+  <xacro:property name="thigh_height" value="0.21" />
+  <xacro:property name="shank_length" value="0.03" />
+  <xacro:property name="shank_width" value="0.05" />
+  <xacro:property name="shank_height" value="0.13" />
+  <xacro:property name="damping_value" value="10" />
+  <xacro:property name="friction_value" value="0.1" />
+
+
   <!-- Import Rviz colors -->
   <xacro:include filename="$(find fyp_quadruped)/urdf/materials.xacro" />
 
+
+  <!-- Inertias -->
+  <xacro:macro name="box_inertial" params="mass length width height">
+    <inertial>
+      <mass value="${mass}" />
+      <inertia ixx="${mass*(height*height+length*length)/12.0}" ixy="0.0" ixz="0.0" iyy="${mass*(width*width+length*length)/12.0}" iyz="0.0" izz="${mass*(width*width+height*height)/12.0}" />
+    </inertial>
+  </xacro:macro>
+
+
   <!-- Main Body -->
+  <link name="dummy_link">
+    <visual>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+    </collision>  
+    <inertial>
+      <mass value="0.01" />
+      <inertia ixx="0.00001" ixy="0.0" ixz="0.0" iyy="0.00001" iyz="0.0" izz="0.00001" />
+    </inertial>
+  </link>
+
   <link name="base_link">
     <visual>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0.0 0.0 0.2416"/>
       <geometry>
-        <mesh filename="package://fyp_quadruped/meshes/body.stl" scale="0.001 0.001 0.001"/>
+       <mesh filename="package://fyp_quadruped/meshes/body/body.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="grey"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0 0.0 0.2416"/>
+      <geometry>
+        <box size="${body_width} ${body_width} ${body_height}"/>
+      </geometry>
+    </collision>  
+    <inertial>         
+      <mass value="3" />
+      <inertia ixx="${3*(2*2+5*5)/12.0}" ixy="0.0" ixz="0.0" iyy="${3*(3*3+5*5)/12.0}" iyz="0.0" izz="${3*(3*3+2*2)/12.0}" />
+    </inertial>  
+  </link>  
+
+  <joint name="dummy_to_base_joint" type="fixed">
+    <parent link="dummy_link"/>
+    <child link="base_link"/>
+    <origin xyz="0.0 0.0 0.0"/>
+  </joint>
+
+  <gazebo reference="base_link">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Grey</material>
+  </gazebo>
+
+
+
+  <!--Left Front Leg-->
+  <link name="shoulder_link_lf">
+    <visual>
+      <origin xyz="0.38 0.1415 0.2616"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.38 0.1415 0.2616"/>
+      <geometry>
+        <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
+      </geometry>
+      <material name="red"/>
+    </collision>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
+  </link>
+
+  <joint name="shoulder_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_lf"/>
+    <origin xyz="0.38 0.1415 0.2616"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_lf">
+    <visual>
+      <origin xyz="0.2565 0.16 0.1131" rpy="0.0 0.785 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.2565 0.16 0.1131" rpy="0.0 0.785 0.0"/>
+      <geometry>
+        <box size="${thigh_length} ${thigh_width} ${thigh_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${thigh_length}" width="${thigh_width}" height="${thigh_height}"/>
+  </link>
+
+  <joint name="elbow_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="shoulder_link_lf"/>
+    <child link="thigh_link_lf"/>
+    <origin xyz="0.2565 0.16 0.1131" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_lf">
+    <visual>
+      <origin xyz="0.3696 0.17 0.0" rpy="0.0 5.5 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.3696 0.17 0.0" rpy="0.0 5.5 0.0"/>
+      <geometry>
+        <box size="${shank_length} ${shank_width} ${shank_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${shank_length}" width="${shank_width}" height="${shank_height}"/>
+  </link>
+
+  <joint name="knee_joint_lf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.3696 0.17 0.0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_lf"/>
+    <child link="shank_link_lf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_lf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+
+ <!--Right Front Leg-->
+  <link name="shoulder_link_rf">
+    <visual>
+      <origin xyz="0.38 -0.064 0.2616"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
       </geometry>
       <material name="red"/>
     </visual>
     <collision>
-      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <origin xyz="0.38 -0.064 0.2616"/>
       <geometry>
-        <mesh filename="package://fyp_quadruped/meshes/body.stl" scale="0.001 0.001 0.001"/>
+        <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
       </geometry>
     </collision>
-    <inertial>
-      <origin xyz="0 0 0"/>
-      <mass value="2.0"/>
-      <inertia ixx="0.0168333333333" ixy="0.0" ixz="0.0" iyy="0.0444833333333" iyz="0.0" izz="0.0556833333333"/>
-    </inertial>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
   </link>
-  <gazebo reference="base_link">
+
+  <joint name="shoulder_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.38 -0.064 0.2616"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
     <material>Gazebo/Red</material>
   </gazebo>
+
+  <link name="thigh_link_rf">
+    <visual>q	
+      <origin xyz="0.2565 -0.064 0.1131" rpy="0.0 0.785 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.2565 -0.064 0.1131" rpy="0.0 0.785 0.0"/>
+      <geometry>
+        <box size="${thigh_length} ${thigh_width} ${thigh_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${thigh_length}" width="${thigh_width}" height="${thigh_height}"/>
+  </link>
+
+  <joint name="elbow_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="shoulder_link_rf"/>
+    <child link="thigh_link_rf"/>
+    <origin xyz="0.2565 -0.064 0.1131" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <link name="shank_link_rf">
+    <visual>
+      <origin xyz="0.3696 -0.06 0.0" rpy="0.0 5.5 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.3696 -0.06 0.0" rpy="0.0 5.5 0.0"/>
+      <geometry>
+        <box size="${shank_length} ${shank_width} ${shank_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${shank_length}" width="${shank_width}" height="${shank_height}"/>
+  </link>
+
+  <joint name="knee_joint_rf" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.3696 -0.06 0.0"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_rf"/>
+    <child link="shank_link_rf"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_rf">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+
+  <!--Left Back Leg-->
+  <link name="shoulder_link_lb">
+    <visual>
+      <origin xyz="0.06 0.1415 0.2616"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0.06 0.1415 0.2616"/>
+      <geometry>
+        <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
+      </geometry>
+      <material name="red"/>
+    </collision>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
+  </link>
+
+  <joint name="shoulder_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_lb"/>
+    <origin xyz="0.38 0.1415 0.2616"/>
+    <axis xyz="1 0 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+
+  <link name="thigh_link_lb">
+    <visual>
+      <origin xyz="0.2085 0.16 0.0919" rpy="0.0 5.5 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.2085 0.16 0.0919" rpy="0.0 5.5 0.0"/>
+      <geometry>
+        <box size="${thigh_length} ${thigh_width} ${thigh_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${thigh_length}" width="${thigh_width}" height="${thigh_height}"/>
+  </link>
+
+  <joint name="elbow_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="shoulder_link_lb"/>
+    <child link="thigh_link_lb"/>
+    <origin xyz="0.2085 0.16 0.0919" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+
+  <link name="shank_link_lb">
+    <visual>
+      <origin xyz="0.0954 0.17 0.0212" rpy="0.0 0.785 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0954 0.17 0.0212" rpy="0.0 0.785 0.0"/>
+      <geometry>
+        <box size="${shank_length} ${shank_width} ${shank_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${shank_length}" width="${shank_width}" height="${shank_height}"/>
+  </link>
+
+  <joint name="knee_joint_lb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.0954 0.17 0.0212"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_lb"/>
+    <child link="shank_link_lb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_lb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+
+ <!--Right Back Leg-->
+  <link name="shoulder_link_rb">
+    <visual>
+      <origin xyz="0.06 -0.064 0.2616"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shoulder.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="red"/>
+    </visual>
+    <collision>
+      <origin xyz="0.06 -0.064 0.2616"/>
+      <geometry>
+        <box size="${shoulder_length} ${shoulder_width} ${shoulder_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.0625}" length="${shoulder_length}" width="${shoulder_width}" height="${shoulder_height}"/>
+  </link>
+
+  <joint name="shoulder_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.06 -0.064 0.2616"/>
+    <axis xyz="1 0 0"/>
+    <parent link="base_link"/>
+    <child link="shoulder_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shoulder_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Red</material>
+  </gazebo>
+
+  <link name="thigh_link_rb">
+    <visual>	
+      <origin xyz="0.2085 -0.064 0.0919" rpy="0.0 5.5 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/thigh.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="blue"/>
+    </visual>
+    <collision>
+      <origin xyz="0.2085 -0.064 0.0919" rpy="0.0 5.5 0.0"/>
+      <geometry>
+        <box size="${thigh_length} ${thigh_width} ${thigh_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${thigh_length}" width="${thigh_width}" height="${thigh_height}"/>
+  </link>
+
+  <joint name="elbow_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <parent link="shoulder_link_rb"/>
+    <child link="thigh_link_rb"/>
+    <origin xyz="0.2085 -0.064 0.0919" rpy="0.0 0.0 0.0"/>
+    <axis xyz="0 1 0"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="thigh_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Blue</material>
+  </gazebo>
+
+  <link name="shank_link_rb">
+    <visual>
+      <origin xyz="0.0954 -0.06 0.0212" rpy="0.0 0.785 0.0"/>
+      <geometry>
+       <mesh filename="package://fyp_quadruped/meshes/leg/shank.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+    <collision>
+      <origin xyz="0.0954 -0.06 0.0212" rpy="0.0 0.785 0.0"/>
+      <geometry>
+        <box size="${shank_length} ${shank_width} ${shank_height}"/>
+      </geometry>
+    </collision>
+    <xacro:box_inertial mass="${0.125}" length="${shank_length}" width="${shank_width}" height="${shank_height}"/>
+  </link>
+
+  <joint name="knee_joint_rb" type="revolute">
+    <limit effort="100.0" lower="${-0.5*pi}" upper="${0.5*pi}" velocity="0.5"/>
+    <origin xyz="0.0954 -0.06 0.0212"/>
+    <axis xyz="0 1 0"/>
+    <parent link="thigh_link_rb"/>
+    <child link="shank_link_rb"/>
+    <dynamics damping="${damping_value}" friction="${friction_value}"/>
+  </joint>
+  <gazebo reference="shank_link_rb">
+    <mu1>100000.0</mu1>
+    <mu2>100000.0</mu2>
+    <material>Gazebo/Green</material>
+  </gazebo>
+
+
+
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/fyp_quadruped</robotNamespace>
+    </plugin>
+  </gazebo>
+
+  <transmission name="tran1">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="shoulder_joint_lf">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor1">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran2">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="elbow_joint_lf">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor2">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
+
+  <transmission name="tran3">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="knee_joint_lf">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="motor3">
+      <hardwareInterface>EffortJointInterface</hardwareInterface>
+      <mechanicalReduction>1</mechanicalReduction>
+    </actuator>
+  </transmission>
 
 </robot>
