@@ -14,7 +14,7 @@
     <arg name="headless" default="false"/>
     <arg name="debug" default="false"/>
 
-    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find fyp_quadruped)/urdf/test.xacro"/>
+    <param name="robot_description" command="$(find xacro)/xacro --inorder $(find fyp_quadruped)/urdf/model_with_meshes.xacro"/>
 
     <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
 	 args="-param robot_description -urdf -model fyp_quadruped"/>
