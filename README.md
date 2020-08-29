@@ -1,4 +1,5 @@
 # fyp_quadruped
+a student project , not for commercial purpose.
 A Quadruped robot project that uses ROS and Gazebo, we are using melodic version of ros.
 
 Installation:
